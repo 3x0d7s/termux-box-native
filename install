@@ -88,7 +88,7 @@ chmod +x start-native.sh
 echo "Installing patch"
 
 cd $HOME/termux-box/ubuntu-fs
-wget -q --show-progress https://github.com/3x0d7s/termux-box-native/releases/download/0.0.1-alpha/patch.tar.xz
+wget -q --show-progress https://github.com/olegos2/termux-box/releases/download/0.0.1-alpha/patch.tar.xz
 rm -rf opt/d3d
 rm -rf opt/mesa
 tar -xf patch.tar.xz
