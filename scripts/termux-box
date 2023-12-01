@@ -80,7 +80,7 @@ fi
 sleep 0.5
 
 if [ ! -L $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f: ]; then
-    ln -s /external/Download $HOME/termux-box-native/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
+    ln -s /external/Download $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
 fi
 
 cd $HOME/termux-box
@@ -105,7 +105,7 @@ if [ "$negus" = "" ]; then
     read oleg
 elif [ "$negus" = "proot" ]; then
     oleg=1
-elif ["$negus" = "chroot"] then
+elif [ "$negus" = "chroot" ]; then
     oleg=2
 else
     oleg=3
