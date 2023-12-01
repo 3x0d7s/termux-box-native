@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $HOME/termux-box
+cd $HOME/termux-box-native
 
 if [ ! -e ubuntu-fs/opt/wine ]; then
     echo "Select which Wine to download"
@@ -10,7 +10,7 @@ if [ ! -e ubuntu-fs/opt/wine ]; then
     case $opcode in
     1)
     if ! wget -q --show-progress https://github.com/Kron4ek/Wine-Builds/releases/download/8.2/wine-8.2-staging-amd64.tar.xz -O ubuntu-fs/opt/wine.tar.xz; then
-    echo "Download failed, restart termux-box"
+    echo "Download failed, restart termux-box-native"
     exit
     else
     tar -xf ubuntu-fs/opt/box/old-box.tar.xz -C ubuntu-fs/usr/local/bin
@@ -28,7 +28,7 @@ if [ ! -e ubuntu-fs/opt/wine ]; then
 fi
 
 if [ ! -e update-timestamp ]; then
-    latestupdate=$(curl --connect-timeout 6 -s https://raw.githubusercontent.com/olegos2/termux-box/main/update-timestamp)
+    latestupdate=$(curl --connect-timeout 6 -s https://raw.githubusercontent.com/3x0d7s/termux-box-native/main/update-timestamp)
     if [[ "$latestupdate" = "" ]]; then
         echo "No internet connection, try again"
         exit
@@ -53,7 +53,7 @@ else echo "$minutes minutes ago"; fi
 
 sleep 0.5
 
-latestupdate=$(curl --connect-timeout 6 -s https://raw.githubusercontent.com/olegos2/termux-box/main/update-timestamp)
+latestupdate=$(curl --connect-timeout 6 -s https://raw.githubusercontent.com/3x0d7s/termux-box-native/main/update-timestamp)
 if [[ "$latestupdate" = "" ]]; then
  echo "Could not check for updates"
 else
@@ -63,14 +63,14 @@ else
         echo -n "A new patch is available! Do you want to install it? (Y/n) "
         read sel
         if [ "$sel" = "Y" ] || [ "$sel" = "y" ]; then
-            curl -s -o ~/y https://raw.githubusercontent.com/olegos2/termux-box/main/scripts/patch
+            curl -s -o ~/y https://raw.githubusercontent.com/3x0d7s/termux-box-native/main/scripts/patch
             chmod +x ~/y
             if ! ~/y; then
             echo "Update failed. If this problem remains, try to force stop termux"
             exit
             fi
-            echo "$latestupdate">~/termux-box/update-timestamp
-            exec $PREFIX/bin/termux-box
+            echo "$latestupdate">~/termux-box-native/update-timestamp
+            exec $PREFIX/bin/termux-box-native
         else
             echo "Update was not installed"
         fi
@@ -80,10 +80,10 @@ fi
 sleep 0.5
 
 if [ ! -L $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f: ]; then
-    ln -s /external/Download $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
+    ln -s /external/Download $HOME/termux-box-native/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
 fi
 
-cd $HOME/termux-box
+cd $HOME/termux-box-native
 touch ubuntu-fs/root/.hushlogin
 mkdir -p /sdcard/Android/data/com.termux/files/Download &>/dev/null
 mkdir -p ubuntu-fs/external &>/dev/null
@@ -92,20 +92,23 @@ rm -rf $PREFIX/tmp/pulse-*
 pulseaudio -k >/dev/null 2>&1
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1
 
-mkdir /sdcard/termux-box >/dev/null 2>&1
-cp -n ubuntu-fs/opt/Env.conf /sdcard/termux-box >/dev/null 2>&1
-cp -n ubuntu-fs/opt/dxvk.conf /sdcard/termux-box >/dev/null 2>&1
+mkdir /sdcard/termux-box-native >/dev/null 2>&1
+cp -n ubuntu-fs/opt/Env.conf /sdcard/termux-box-native >/dev/null 2>&1
+cp -n ubuntu-fs/opt/dxvk.conf /sdcard/termux-box-native >/dev/null 2>&1
 negus=$(cat ubuntu-fs/opt/script.conf)
 if [ "$negus" = "" ]; then
     echo ""
     echo "Select containerization method"
     echo "1) Proot"
     echo "2) Chroot (root only)"
+    echo "3) Native"
     read oleg
 elif [ "$negus" = "proot" ]; then
     oleg=1
-else
+else ["$negus" = "chroot"] then
     oleg=2
+else
+    oleg=3
 fi
 case $oleg in
 1)
@@ -118,6 +121,10 @@ case $oleg in
     sudo ./start-chroot.sh
     prootuser=$(id -u)
     sudo chown -hR $prootuser:$prootuser ubuntu-fs
+    ;;
+3)
+    echo "native">ubuntu-fs/opt/script.conf
+    ./start-native.sh
     ;;
 esac
 
