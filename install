@@ -70,7 +70,7 @@ tar -xf rootfs.tar.xz
 rm -rf rootfs.tar.xz
 
 cd $HOME/termux-box/ubuntu-fs/opt
-wget https://github.com/3x0d7s/termux-box/raw/main/scripts/scripts.tar.gz &>/dev/null
+wget https://github.com/3x0d7s/termux-box-native/raw/main/scripts/scripts.tar.gz &>/dev/null
 tar -xf scripts.tar.gz
 rm -rf scripts.tar.gz
 
