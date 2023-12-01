@@ -105,7 +105,7 @@ if [ "$negus" = "" ]; then
     read oleg
 elif [ "$negus" = "proot" ]; then
     oleg=1
-else ["$negus" = "chroot"] then
+elif ["$negus" = "chroot"] then
     oleg=2
 else
     oleg=3
